@@ -31,7 +31,6 @@ io.on("connection", function (uniqueSocket) {
         uniqueSocket.emit("playerRole", "Spectator");
     }
 
-    // Fix: Use uniqueSocket instead of socket
     uniqueSocket.on("disconnect", function () {
         console.log("Disconnected:", uniqueSocket.id);
         if (uniqueSocket.id === players.white) {
