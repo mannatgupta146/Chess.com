@@ -85,7 +85,7 @@ const getPieceUnicode = (piece) => {
     if (!piece) return "";
 
     const unicodePieces = {
-        'p': { w: "♙", b: "♟" }, // Corrected white/black pawn symbols
+        'p': { w: "♙", b: "♟︎" }, // Corrected white/black pawn symbols
         'r': { w: "♖", b: "♜" },
         'n': { w: "♘", b: "♞" },
         'b': { w: "♗", b: "♝" },
