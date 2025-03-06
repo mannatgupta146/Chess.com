@@ -7,56 +7,53 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       .chessboard {
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
-        grid-template-rows: repeat(8, 1fr);
-        width: 400px;
-        height: 400px;
+          display: grid;
+          grid-template-columns: repeat(8, 1fr);
+          grid-template-rows: repeat(8, 1fr);
+          width: 560px;
+          height: 560px;
+          border: 2px solid #4b5563;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+          background: #fff;
       }
-
-      .piece.white {
-        color: white;
-        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
-      }
-
-      .piece.black {
-        color: black;
-      }
-
-      .flipped {
-        transform: rotate(180deg);
-      }
-
+  
       .square {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.2s;
+          position: relative;
       }
-
-      .square.light {
-        background-color: #f0d9b5;
-      }
-
-      .square.dark {
-        background-color: #b58863;
-      }
-
+  
+      .square.light { background-color: #f0d9b5; }
+      .square.dark { background-color: #b58863; }
+  
       .piece {
-        font-size: 36px;
+          font-size: 48px;
+          transition: transform 0.2s;
+          user-select: none;
+          z-index: 2;
+          position: relative;
       }
-
-      .piece.draggable {
-        cursor: grab;
+  
+      .piece.white { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+      .piece.black { text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2); }
+  
+      .flipped {
+          transform: rotate(180deg);
       }
-
-      .dragging {
-        opacity: 0.5;
-      }
-
+  
       .flipped .piece {
-        transform: rotate(180deg);
+          transform: rotate(180deg);
       }
-    </style>
+  
+      .cursor-grab { cursor: grab; }
+      .active:cursor-grabbing { cursor: grabbing; }
+      .opacity-50 { opacity: 0.5; }
+      .bg-yellow-200 { background-color: #fef08a !important; }
+  </style>
 </head>
 <body>
     <div class="w-full h-screen flex items-center justify-center bg-zinc-900">

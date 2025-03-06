@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 const chess = new Chess();
-let players = {}; // Stores white & black players
+let players = {};
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
@@ -18,79 +18,92 @@ app.get("/", (req, res) => {
     res.render("index", { title: "Chess Game" });
 });
 
-io.on("connection", function (uniqueSocket) {
-    console.log("Connected:", uniqueSocket.id);
+io.on("connection", function (socket) {
+    console.log("Connected:", socket.id);
 
-    // Assign player roles (white, black, or spectator)
+    // Reset players if both disconnected
+    if (Object.values(players).every(v => !v)) players = {};
+
+    // Assign roles
     if (!players.white) {
-        players.white = uniqueSocket.id;
-        uniqueSocket.emit("playerRole", "W");
+        players.white = socket.id;
+        socket.emit("playerRole", "W");
     } else if (!players.black) {
-        players.black = uniqueSocket.id;
-        uniqueSocket.emit("playerRole", "B");
+        players.black = socket.id;
+        socket.emit("playerRole", "B");
     } else {
-        uniqueSocket.emit("playerRole", "Spectator");
+        socket.emit("playerRole", "Spectator");
     }
 
-    uniqueSocket.on("disconnect", function () {
-        console.log("Disconnected:", uniqueSocket.id);
+    // Send initial state
+    socket.emit("boardState", chess.fen());
+    console.log("Current players:", players);
 
-        if (uniqueSocket.id === players.white) {
+    socket.on("disconnect", () => {
+        console.log("Disconnected:", socket.id);
+        
+        // Handle player disconnection
+        if (socket.id === players.white) {
             delete players.white;
             assignNextPlayer("white");
-        } else if (uniqueSocket.id === players.black) {
+        } else if (socket.id === players.black) {
             delete players.black;
             assignNextPlayer("black");
         }
+        
+        console.log("Updated players:", players);
     });
 
-    uniqueSocket.on("move", (move) => {
+    socket.on("move", (move) => {
         try {
-            // Reject spectators from moving
-            if (uniqueSocket.id !== players.white && uniqueSocket.id !== players.black) {
-                return uniqueSocket.emit("invalidMove", "Spectators cannot move.");
+            // Validate player turn
+            const isWhitePlayer = socket.id === players.white;
+            const isBlackPlayer = socket.id === players.black;
+            
+            if (!isWhitePlayer && !isBlackPlayer) {
+                return socket.emit("invalidMove", "Spectators cannot move");
             }
 
-            // Ensure the right player moves
-            if ((chess.turn() === "w" && uniqueSocket.id !== players.white) ||
-                (chess.turn() === "b" && uniqueSocket.id !== players.black)) {
-                return;
+            if ((chess.turn() === 'w' && !isWhitePlayer) || 
+                (chess.turn() === 'b' && !isBlackPlayer)) {
+                return socket.emit("invalidMove", "Not your turn");
             }
 
-            // Validate the move
+            // Attempt move
             const result = chess.move(move);
-            if (!result) {
-                console.log("Invalid Move:", move);
-                return uniqueSocket.emit("invalidMove", move);
-            }
+            if (!result) return socket.emit("invalidMove", "Invalid move");
 
-            // Broadcast valid move
-            io.emit("move", move);
+            // Broadcast updates
             io.emit("boardState", chess.fen());
 
+            // Handle game end
+            if (chess.isGameOver()) {
+                const message = chess.isCheckmate() 
+                    ? `Checkmate! ${chess.turn() === 'w' ? 'Black' : 'White'} wins!`
+                    : "Game drawn!";
+                io.emit("gameOver", message);
+                chess.reset();
+            }
+
         } catch (err) {
-            console.error("Move Error:", err);
-            uniqueSocket.emit("invalidMove", move);
+            socket.emit("invalidMove", err.message);
         }
     });
 });
 
-// Assign next available player when someone disconnects
 const assignNextPlayer = (color) => {
-    const availableSockets = Array.from(io.sockets.sockets.keys());
-    for (let socketId of availableSockets) {
-        if (!players.white && color === "white") {
-            players.white = socketId;
-            io.to(socketId).emit("playerRole", "W");
-            break;
-        } else if (!players.black && color === "black") {
-            players.black = socketId;
-            io.to(socketId).emit("playerRole", "B");
-            break;
-        }
+    const available = Array.from(io.sockets.sockets.keys())
+        .filter(id => !Object.values(players).includes(id));
+
+    if (available.length > 0) {
+        const newPlayer = available[0];
+        players[color] = newPlayer;
+        io.to(newPlayer).emit("playerRole", color === "white" ? "W" : "B");
+        io.to(newPlayer).emit("boardState", chess.fen());
+        console.log(`Assigned ${color} to ${newPlayer}`);
     }
 };
 
 server.listen(3000, () => {
-    console.log("Server is running on port 3000");
+    console.log("Server running on port 3000");
 });
