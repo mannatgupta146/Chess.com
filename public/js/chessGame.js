@@ -85,12 +85,12 @@ const getPieceUnicode = (piece) => {
     if (!piece) return "";
 
     const unicodePieces = {
-        'p': { w: "♙", b: "♟︎" }, // Corrected white/black pawn symbols
-        'r': { w: "♖", b: "♜" },
-        'n': { w: "♘", b: "♞" },
-        'b': { w: "♗", b: "♝" },
-        'q': { w: "♕", b: "♛" },
-        'k': { w: "♔", b: "♚" }
+        'p': { w: "♙", b: "♙" }, // Corrected white/black pawn symbols
+        'r': { w: "♖", b: "♖" },
+        'n': { w: "♘", b: "♘" },
+        'b': { w: "♗", b: "♗" },
+        'q': { w: "♕", b: "♕" },
+        'k': { w: "♔", b: "♔" }
     };
 
     return unicodePieces[piece.type]?.[piece.color] || "";
