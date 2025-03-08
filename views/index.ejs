@@ -6,53 +6,75 @@
     <title>Chess Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      .chessboard {
-          display: grid;
-          grid-template-columns: repeat(8, 1fr);
-          grid-template-rows: repeat(8, 1fr);
-          width: 560px;
-          height: 560px;
-          border: 2px solid #4b5563;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-          background: #fff;
-      }
-  
-      .square {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background-color 0.2s;
-          position: relative;
-      }
-  
-      .square.light { background-color: #f0d9b5; }
-      .square.dark { background-color: #b58863; }
-  
-      .piece {
-          font-size: 48px;
-          transition: transform 0.2s;
-          user-select: none;
-          z-index: 2;
-          position: relative;
-      }
-  
-      .piece.white { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
-      .piece.black { text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2); }
-  
-      .flipped {
-          transform: rotate(180deg);
-      }
-  
-      .flipped .piece {
-          transform: rotate(180deg);
-      }
-  
-      .cursor-grab { cursor: grab; }
-      .active:cursor-grabbing { cursor: grabbing; }
-      .opacity-50 { opacity: 0.5; }
-      .bg-yellow-200 { background-color: #fef08a !important; }
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 560px;
+            max-height: 560px;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            background: #fff;
+        }
+        
+        .square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        
+        .square.light { background-color: #f0d9b5; }
+        .square.dark { background-color: #b58863; }
+        
+        .piece {
+            font-size: 3.5em;
+            width: 1em;
+            height: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            user-select: none;
+            position: relative;
+        }
+        
+        .piece.white {
+            color: #f8f8f8;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        .piece.black {
+            color: #222;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6);
+        }
+        
+        .flipped {
+            transform: rotate(180deg);
+        }
+        
+        .flipped .piece {
+            transform: rotate(180deg);
+        }
+        
+        @media (max-width: 640px) {
+            .piece {
+                font-size: 2.5em;
+            }
+            .chessboard {
+                border-radius: 4px;
+            }
+        }
+        
+        .cursor-grab { cursor: grab; }
+        .active:cursor-grabbing { cursor: grabbing; }
+        .opacity-50 { opacity: 0.5; }
+        .bg-yellow-200 { background-color: #fef08a !important; }
   </style>
 </head>
 <body>

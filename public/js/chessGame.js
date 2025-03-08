@@ -4,6 +4,20 @@ const boardElement = document.querySelector('.chessboard');
 let playerRole = null;
 let sourceSquare = null;
 
+// 🔹 Request board state only after player role is assigned
+socket.on("playerRole", (role) => {
+    playerRole = role;
+    console.log(`🔵 You are playing as ${role}`);
+    requestBoardState();
+});
+
+// 🔹 Request board state from server
+const requestBoardState = () => {
+    socket.emit("requestBoardState");
+};
+
+// 🔹 Render board based on current FEN state
+// 🔹 Render board based on current FEN state
 const renderBoard = () => {
     const board = chess.board();
     boardElement.innerHTML = "";
@@ -11,17 +25,23 @@ const renderBoard = () => {
     board.forEach((row, rowIndex) => {
         row.forEach((square, squareIndex) => {
             const isFlipped = playerRole === "B";
-            const displayRow = isFlipped ? 7 - rowIndex : rowIndex;
-            const displayCol = isFlipped ? 7 - squareIndex : squareIndex;
+            
+            // Actual chess position (server perspective)
+            const file = String.fromCharCode(97 + squareIndex);
+            const rank = 8 - rowIndex;
+            const position = file + rank;
+
+            // Visual position (client perspective)
+            const visualRow = isFlipped ? 7 - rowIndex : rowIndex;
+            const visualCol = isFlipped ? 7 - squareIndex : squareIndex;
 
             const squareElement = document.createElement('div');
             squareElement.classList.add(
                 'square',
-                (displayRow + displayCol) % 2 === 0 ? 'light' : 'dark'
+                (visualRow + visualCol) % 2 === 0 ? 'light' : 'dark'
             );
 
-            const position = `${String.fromCharCode(97 + displayCol)}${8 - displayRow}`;
-            squareElement.dataset.position = position;
+            squareElement.dataset.position = position; // Store actual position
 
             if (square) {
                 const pieceElement = document.createElement('div');
@@ -31,7 +51,7 @@ const renderBoard = () => {
                     'cursor-grab',
                     'active:cursor-grabbing'
                 );
-                
+
                 pieceElement.innerHTML = getPieceUnicode(square);
                 pieceElement.dataset.type = square.type;
                 pieceElement.dataset.color = square.color;
@@ -40,12 +60,12 @@ const renderBoard = () => {
                     pieceElement.draggable = true;
 
                     pieceElement.addEventListener('dragstart', (e) => {
-                        sourceSquare = position;
+                        sourceSquare = position; // Use actual position
                         e.dataTransfer.setData('text/plain', sourceSquare);
                         pieceElement.classList.add('opacity-50');
                     });
 
-                    pieceElement.addEventListener('dragend', (e) => {
+                    pieceElement.addEventListener('dragend', () => {
                         pieceElement.classList.remove('opacity-50');
                     });
                 }
@@ -53,20 +73,23 @@ const renderBoard = () => {
                 squareElement.appendChild(pieceElement);
             }
 
+            // Event handlers (using actual positions)
             squareElement.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 squareElement.classList.add('bg-yellow-200');
             });
 
-            squareElement.addEventListener('dragleave', (e) => {
+            squareElement.addEventListener('dragleave', () => {
                 squareElement.classList.remove('bg-yellow-200');
             });
 
             squareElement.addEventListener('drop', (e) => {
                 e.preventDefault();
                 squareElement.classList.remove('bg-yellow-200');
-                const targetSquare = position;
+                const targetSquare = position; // Use actual position
+                if (!sourceSquare || sourceSquare === targetSquare) return;
                 handleMove(sourceSquare, targetSquare);
+                sourceSquare = null;
             });
 
             boardElement.appendChild(squareElement);
@@ -76,33 +99,45 @@ const renderBoard = () => {
     boardElement.classList.toggle("flipped", playerRole === "B");
 };
 
+// 🔹 Handle move validation & communication
 const handleMove = (from, to) => {
+    if (!from || !to) return;
+
+    // 🔸 Ensure it's the player's turn
+    if ((chess.turn() === "w" && playerRole !== "W") ||
+        (chess.turn() === "b" && playerRole !== "B")) {
+        console.log("⚠️ Not your turn!");
+        return;
+    }
+
     const move = { from, to, promotion: 'q' };
+
+    // 🔸 Validate move locally before sending
+    if (!chess.move(move)) {
+        console.log(`❌ Invalid move: ${JSON.stringify(move)}`);
+        renderBoard();
+        return;
+    }
+
+    chess.undo(); // 🔹 Revert local move before server confirmation
     socket.emit('move', move);
 };
 
+// 🔹 Get Unicode for chess pieces
 const getPieceUnicode = (piece) => {
     if (!piece) return "";
-
     const unicodePieces = {
-        'p': { w: "♙", b: "♙" }, 
+        'p': { w: "♙", b: "♙" },
         'r': { w: "♖", b: "♖" },
         'n': { w: "♘", b: "♘" },
         'b': { w: "♗", b: "♗" },
         'q': { w: "♕", b: "♕" },
         'k': { w: "♔", b: "♔" }
     };
-
     return unicodePieces[piece.type]?.[piece.color] || "";
 };
 
-// Socket event handlers
-socket.on("playerRole", (role) => {
-    playerRole = role;
-    console.log(`You are playing as ${role}`);
-    renderBoard();
-});
-
+// 🔹 Socket event handlers
 socket.on("boardState", (fen) => {
     chess.load(fen);
     renderBoard();
@@ -113,9 +148,9 @@ socket.on("move", (move) => {
     renderBoard();
 });
 
-socket.on("invalidMove", (move) => {
-    console.log("Invalid move attempted:", move);
-    renderBoard(); // Reset board view
+socket.on("invalidMove", () => {
+    chess.undo();
+    renderBoard();
 });
 
 socket.on("gameOver", (message) => {
@@ -124,17 +159,13 @@ socket.on("gameOver", (message) => {
     renderBoard();
 });
 
-// Connection status handlers
 socket.on("connect", () => {
-    console.log("Connected to server");
-    if (playerRole) {
-        socket.emit("requestReconnect", playerRole);
-    }
+    console.log("✅ Connected to server");
 });
 
 socket.on("disconnect", () => {
-    console.log("Disconnected from server");
+    console.log("🔴 Disconnected from server");
 });
 
-// Initial render
-renderBoard();
+// 🔹 Request board state on load
+requestBoardState();
