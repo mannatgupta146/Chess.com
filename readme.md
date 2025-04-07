@@ -4,13 +4,16 @@ A real-time multiplayer Chess game inspired by Chess.com. Built using **Node.js*
 
 Check it out on Render:  
 👉 [https://chess-com.onrender.com](https://chess-com-phga.onrender.com) 
+
 ---
 
 ## 📸 Preview
 
 ![Chess.com Clone Screenshot](image.png) 
 ***See how it looks like.***
+
 ---
+
 ## 🔧 Features
 
 - 🔁 Real-time multiplayer chess with two players
@@ -47,6 +50,7 @@ Check it out on Render:
 Once the server is running, open your browser and visit:
 
 👉 http://localhost:3000
+
 ---
 
 ## 🚢 Deployment (Render)
