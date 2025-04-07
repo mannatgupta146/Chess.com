@@ -35,18 +35,18 @@ Check it out on Render:
 
 ## 📦 Installation
 
-# 1. Clone the repository
+### 1. Clone the repository
 git clone https://github.com/mannatgupta146/Chess.com.git
 
-# 2. Navigate into the project directory
+### 2. Navigate into the project directory
 cd Chess.com
 
-# 3. Install dependencies
+### 3. Install dependencies
 npm install
 
 
 ## 🔄 Run Locally
-# Start the development server
+### Start the development server
 npm run dev
 Once the server is running, open your browser and visit:
 
