@@ -11,7 +11,7 @@ Check it out on Render:
 
 ## 📸 Preview
 
-![Chess.com Clone Screenshot](screenshot.png) 
+![Chess.com Clone Screenshot](image.png) 
 
 ---
 
@@ -36,18 +36,19 @@ Check it out on Render:
 ## 📦 Installation
 
 ### 1. Clone the repository
-git clone https://github.com/mannatgupta146/Chess.com.git
+```git clone https://github.com/mannatgupta146/Chess.com.git```
 
 ### 2. Navigate into the project directory
-cd Chess.com
+```cd Chess.com```
 
 ### 3. Install dependencies
-npm install
+```npm install```
 
 
 ## 🔄 Run Locally
 ### Start the development server
-npm run dev
+```npm run dev```
+
 Once the server is running, open your browser and visit:
 
 👉 http://localhost:3000
@@ -60,6 +61,7 @@ Once the server is running, open your browser and visit:
 3. Auto-deploy from main branch
 
 ## 📁 Project Structure
+```
 Chess.com/
 ├── public/
 │   └── js/
@@ -69,6 +71,7 @@ Chess.com/
 ├── app.js                 # Main server file
 ├── package.json
 └── README.md
+```
 
 ## ✨ Future Improvements
 - ✅ Display move history
