@@ -1,19 +1,14 @@
-# ♟️ Chess.com Clone
+# ♟️ Chess.com
 
 A real-time multiplayer Chess game inspired by Chess.com. Built using **Node.js**, **Socket.IO**, **Express**, and **chess.js**, with a clean **Tailwind CSS** UI.
-
-## 🚀 Live Demo
 
 Check it out on Render:  
 👉 [https://chess-com.onrender.com](https://chess-com-phga.onrender.com) 
 
----
-
 ## 📸 Preview
 
 ![Chess.com Clone Screenshot](image.png) 
-
----
+***See how it looks like.***
 
 ## 🛠 Tech Stack
 
@@ -21,7 +16,6 @@ Check it out on Render:
 - **Backend**: Node.js, Express.js, Socket.IO
 - **Game Logic**: chess.js
 
----
 
 ## 🔧 Features
 
@@ -31,7 +25,6 @@ Check it out on Render:
 - 📡 Instant updates using WebSockets (Socket.IO)
 - ✅ Simple UI with drag-and-drop support
 
----
 
 ## 📦 Installation
 
@@ -79,3 +72,6 @@ Chess.com/
 - 🎉 Sound effects on move
 - 🔐 User authentication
 - 🧠 AI bot for single-player mode
+
+---
+**Nothing could save me from your smile, so checkmate, my Queen. ♛💕**
