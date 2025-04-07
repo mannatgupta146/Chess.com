@@ -4,19 +4,13 @@ A real-time multiplayer Chess game inspired by Chess.com. Built using **Node.js*
 
 Check it out on Render:  
 👉 [https://chess-com.onrender.com](https://chess-com-phga.onrender.com) 
+---
 
 ## 📸 Preview
 
 ![Chess.com Clone Screenshot](image.png) 
 ***See how it looks like.***
-
-## 🛠 Tech Stack
-
-- **Frontend**: HTML, Tailwind CSS, JavaScript
-- **Backend**: Node.js, Express.js, Socket.IO
-- **Game Logic**: chess.js
-
-
+---
 ## 🔧 Features
 
 - 🔁 Real-time multiplayer chess with two players
@@ -24,7 +18,14 @@ Check it out on Render:
 - 🔄 Board flips for black player
 - 📡 Instant updates using WebSockets (Socket.IO)
 - ✅ Simple UI with drag-and-drop support
+---
 
+## 🛠 Tech Stack
+
+- **Frontend**: HTML, Tailwind CSS, JavaScript
+- **Backend**: Node.js, Express.js, Socket.IO
+- **Game Logic**: chess.js
+---
 
 ## 📦 Installation
 
@@ -36,6 +37,7 @@ Check it out on Render:
 
 ### 3. Install dependencies
 ```npm install```
+---
 
 
 ## 🔄 Run Locally
@@ -45,6 +47,7 @@ Check it out on Render:
 Once the server is running, open your browser and visit:
 
 👉 http://localhost:3000
+---
 
 ## 🚢 Deployment (Render)
 1. Create a new Web Service on Render
@@ -52,6 +55,7 @@ Once the server is running, open your browser and visit:
 - Build Command: npm install
 - Start Command: node app.js
 3. Auto-deploy from main branch
+---
 
 ## 📁 Project Structure
 ```
@@ -65,13 +69,24 @@ Chess.com/
 ├── package.json
 └── README.md
 ```
+---
 
 ## ✨ Future Improvements
 - ✅ Display move history
 - 💬 In-game chat feature
 - 🎉 Sound effects on move
 - 🔐 User authentication
-- 🧠 AI bot for single-player mode
+- 🧠 AI bot for single-player 
+---
+
+## 🛠️ Contributing
+Contributions are welcome and appreciated! 💡
+
+If you have suggestions, feature requests, or would like to improve the project, feel free to:
+- Fork the repository
+- Create a new branch
+- Commit your changes
+- Open a pull request
 
 ---
 **Nothing could save me from your smile, so checkmate, my Queen. ♛💕**
